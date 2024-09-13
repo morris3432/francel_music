@@ -1,36 +1,53 @@
-import tkinter as tk
-from tkinter import Label, Button, Frame
+import flet as ft
 
-# Configura la ventana principal
-app = tk.Tk()
-app.title("Reproductor de Música")
-app.geometry('800x600')  # Ajusta el tamaño de la ventana
-
-# Configura el marco del título
-titulo = Frame(app, background="black", height=70)
-titulo.pack(fill=tk.X)
-
-def menu():
-    print('hi')
+async def main(page: ft.Page):
+    page.title = 'Francel Music'
+    page.bgcolor = ft.colors.BLUE_GREY_900
+    page.padding = 20
     
-# Función para borrar el texto de ejemplo cuando el campo recibe enfoque
-def on_focus_in(event):
-    if ct.get() == 'Buscar canción o artista':
-        ct.delete(0, tk.END)  # Borra el texto de ejemplo
+    # Crear un marco para el menú horizontal
+    menu = ft.Row(
+        controls=[
+            ft.IconButton(icon=ft.icons.HOME, tooltip='Inicio'),
+            ft.IconButton(icon=ft.icons.SEARCH, tooltip='Buscar'),
+            ft.IconButton(icon=ft.icons.SETTINGS, tooltip='Configuración'),
+        ],
+        spacing=10,  # Espaciado entre los botones
+        alignment=ft.MainAxisAlignment.START,  # Alineación horizontal
+        wrap=True,
+    )
+    
+    # Crear el contenido principal
+    content = ft.Column(
+        controls=[
+            ft.Text(value='Francel Music', style='headline1', color=ft.colors.WHITE),
+            # Aquí puedes agregar más controles para tu aplicación
+        ],
+        spacing=20,  # Espaciado entre los controles
+        alignment=ft.MainAxisAlignment.CENTER,  # Alineación vertical
+    )
+    
+    # Crear el diseño principal
+    page.add(
+        ft.Row(
+            controls=[
+                ft.Container(
+                    content,
+                    padding=20,
+                    width=ft.ContainerWidth.FILL,
+                    bgcolor=ft.colors.BLUE_GREY_800,
+                    border_radius=10,
+                ),
+                ft.Container(
+                    menu,
+                    padding=20,
+                    bgcolor=ft.colors.BLUE_GREY_700,
+                    border_radius=10,
+                    width=ft.ContainerWidth.AUTO,
+                ),
+            ],
+            alignment=ft.MainAxisAlignment.START,
+        )
+    )
 
-# Función para restaurar el texto de ejemplo si el campo queda vacío
-def on_focus_out(event):
-    if ct.get() == '':
-        ct.insert(0, 'Buscar canción o artista')  # Restaura el texto de ejemplo
-
-# Campo de entrada para la búsqueda
-ct = tk.Entry(app, font=("Arial", 14))
-ct.place(x=50, y=20, height=30, width=400)
-ct.insert(0, "Buscar canción o artista")
-
-# Configura los eventos de enfoque
-ct.bind('<FocusIn>', on_focus_in)
-ct.bind('<FocusOut>', on_focus_out)
-
-# Ejecuta la aplicación
-app.mainloop()
+ft.app(target=main)
