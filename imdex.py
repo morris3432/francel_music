@@ -1,53 +1,36 @@
 import flet as ft
+import pygame
+import os
+from mutagen.mp3 import MP3
 
+class Song:
+    def __init__(self,filenmae):
+        self.filename= filenmae
+        self.title=os.path.splitext(filenmae)[0]
+        self.duracion =self.get_duracion()
+        
+    def get_duracion(self):
+        audio=MP3(os.path.join('audios', self.filename))
+        return audio.info.length
+            
 async def main(page: ft.Page):
     page.title = 'Francel Music'
     page.bgcolor = ft.colors.BLUE_GREY_900
     page.padding = 20
     
-    # Crear un marco para el menú horizontal
-    menu = ft.Row(
-        controls=[
-            ft.IconButton(icon=ft.icons.HOME, tooltip='Inicio'),
-            ft.IconButton(icon=ft.icons.SEARCH, tooltip='Buscar'),
-            ft.IconButton(icon=ft.icons.SETTINGS, tooltip='Configuración'),
-        ],
-        spacing=10,  # Espaciado entre los botones
-        alignment=ft.MainAxisAlignment.START,  # Alineación horizontal
-        wrap=True,
-    )
+    # Agregar un título en la página
+    title = ft.Text(value='Francel Music', size=30, style='headline1', color=ft.colors.WHITE)
     
-    # Crear el contenido principal
-    content = ft.Column(
-        controls=[
-            ft.Text(value='Francel Music', style='headline1', color=ft.colors.WHITE),
-            # Aquí puedes agregar más controles para tu aplicación
-        ],
-        spacing=20,  # Espaciado entre los controles
-        alignment=ft.MainAxisAlignment.CENTER,  # Alineación vertical
-    )
     
-    # Crear el diseño principal
-    page.add(
-        ft.Row(
-            controls=[
-                ft.Container(
-                    content,
-                    padding=20,
-                    width=ft.ContainerWidth.FILL,
-                    bgcolor=ft.colors.BLUE_GREY_800,
-                    border_radius=10,
-                ),
-                ft.Container(
-                    menu,
-                    padding=20,
-                    bgcolor=ft.colors.BLUE_GREY_700,
-                    border_radius=10,
-                    width=ft.ContainerWidth.AUTO,
-                ),
-            ],
-            alignment=ft.MainAxisAlignment.START,
-        )
-    )
+    pygame.mixer.init()
+    playlist=[Song(f) for f in os.listdir ('audios') if f.endswith('.mp3')]
+    
+    c_s_i=0
+    song_info=ft.Text(size=20,color=ft.colors.WHITE)
+    c_t_t=ft.Text(value='00:00', color=ft.colors.WHITE60)
+    prs_bar= ft.ProgressBar(value=0.0, width=500,color='white',bgcolor='gray')
+    play_button=ft.IconButton(icon=ft.icons.PLAY_ARROW, icon_color=ft.colors.WHITE )
+   
+    page.add(title,c_t_t,prs_bar,play_button)
 
 ft.app(target=main)
