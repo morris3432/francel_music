@@ -19,7 +19,6 @@ async def main(page: ft.Page):
     page.bgcolor = '231525'
     page.padding = 20
     
-    # Agregar un título en la página
     title = ft.Text(value='Francel Music', size=30, style='headline1', color=ft.colors.WHITE)
     
     pygame.mixer.init()
