@@ -16,18 +16,17 @@ class Song:
 
 async def main(page: ft.Page):
     page.title = 'Francel Music'
-    page.bgcolor = '231525'
+    page.bgcolor = '#231525'
     page.padding = 20
-    
     title = ft.Text(value='Francel Music', size=30, style='headline1', color=ft.colors.WHITE)
-    
+
     pygame.mixer.init()
     playlist = [Song(f) for f in os.listdir('audios') if f.endswith('.mp3')]
-    
+
     def load_song():
         pygame.mixer.music.load(os.path.join('audios', playlist[c_s_i].filename))
-    
-    def play_pause(e): 
+
+    def play_pause(e):
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.pause()
             play_button.icon = ft.icons.PLAY_ARROW
@@ -48,7 +47,7 @@ async def main(page: ft.Page):
         update_info_song()
         play_button.icon = ft.icons.PAUSE
         page.update()
-    
+
     def update_info_song():
         song = playlist[c_s_i]
         song_info.value = f'{song.title}'
@@ -56,11 +55,11 @@ async def main(page: ft.Page):
         prs_bar.value = 0.0
         c_t_t.value = '00:00'
         page.update()
-    
+
     def format_time(seconds):
         minutos, seconds = divmod(int(seconds), 60)
         return f'{minutos:02d}:{seconds:02d}'
-    
+
     async def update_progress():
         while True:
             if pygame.mixer.music.get_busy():
@@ -69,7 +68,7 @@ async def main(page: ft.Page):
                 c_t_t.value = format_time(current_time)
                 page.update()
             await asyncio.sleep(1)
-    
+
     c_s_i = 0
     song_info = ft.Text(size=20, color=ft.colors.WHITE)
     c_t_t = ft.Text(value='00:00', color=ft.colors.WHITE60)
@@ -78,28 +77,55 @@ async def main(page: ft.Page):
     play_button = ft.IconButton(icon=ft.icons.PLAY_ARROW, on_click=play_pause, icon_color=ft.colors.WHITE)
     before_button = ft.IconButton(icon=ft.icons.SKIP_PREVIOUS, on_click=lambda _: change_song(-1), icon_color=ft.colors.WHITE)
     after_button = ft.IconButton(icon=ft.icons.SKIP_NEXT, on_click=lambda _: change_song(+1), icon_color=ft.colors.WHITE)
-    
-    controls = ft.Row(
-        [before_button, play_button, after_button],
-        alignment=ft.MainAxisAlignment.CENTER
+
+    # Contenedor para los controles de música
+    contenedor = ft.Container(
+        content=ft.Column(
+            controls=[
+                ft.Container(
+                    content=song_info,
+                    padding=ft.padding.only(50)
+                ),
+                ft.Container(
+                    content=ft.Row(
+                        controls=[
+                            c_t_t,
+                            prs_bar,
+                            duracion
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER
+                    )
+                ),
+                ft.Container(
+                    content=ft.Row(
+                        controls=[
+                            before_button,
+                            play_button,
+                            after_button
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER
+                    ),
+                    padding=ft.padding.only()
+                )
+            ],
+            alignment=ft.MainAxisAlignment.CENTER
+        ),
+        width=1000,
+        height=130,
+        border_radius=20,
+        gradient=ft.LinearGradient(
+            colors=[ft.colors.PURPLE_900, ft.colors.GREY_900, ft.colors.BLACK],
+            begin=ft.Alignment(-1, -1),
+            end=ft.Alignment(1, 1)
+        )
     )
-    
-    drt = ft.Row(
-        [c_t_t, prs_bar, duracion],
-        alignment=ft.MainAxisAlignment.CENTER
-    )
-    
-    ttts = ft.Row([song_info])
-   
-    col = ft.Column(
-        [ttts, drt, controls],
-        alignment=ft.MainAxisAlignment.CENTER
-    )
-    page.add(title, col)
+
+    page.add(title,contenedor)
     if playlist:
         load_song()
         update_info_song()
         page.update()
         await update_progress()
+
 
 ft.app(target=main)
