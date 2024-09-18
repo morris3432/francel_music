@@ -14,9 +14,11 @@ class Song:
         audio = MP3(os.path.join('audios', self.filename))
         return audio.info.length
 
-async def main(page: ft.Page):
+async def main_play_wg(page: ft.Page):
     page.title = 'Francel Music'
-    page.bgcolor = '#231525'
+    page.window_min_height=820
+    page.window_min_width=1020
+    page.theme_mode=ft.ThemeMode.SYSTEM
     page.padding = 20
     title = ft.Text(value='Francel Music', size=30, style='headline1', color=ft.colors.WHITE)
 
@@ -78,49 +80,48 @@ async def main(page: ft.Page):
     before_button = ft.IconButton(icon=ft.icons.SKIP_PREVIOUS, on_click=lambda _: change_song(-1), icon_color=ft.colors.WHITE)
     after_button = ft.IconButton(icon=ft.icons.SKIP_NEXT, on_click=lambda _: change_song(+1), icon_color=ft.colors.WHITE)
 
-    # Contenedor para los controles de música
-    contenedor = ft.Container(
-        content=ft.Column(
-            controls=[
-                ft.Container(
-                    content=song_info,
-                    padding=ft.padding.only(50)
+    
+    contenedor_wg = ft.Container(
+                content=ft.Column(
+                    controls=[
+                        ft.Container(
+                            content=song_info,
+                            padding=ft.padding.only(50)
+                        ),
+                        ft.Container(
+                            content=ft.Row(
+                                controls=[
+                                    c_t_t,
+                                    prs_bar,
+                                    duracion
+                                ],
+                                alignment=ft.MainAxisAlignment.CENTER
+                            )
+                        ),
+                        ft.Container(
+                            content=ft.Row(
+                                controls=[
+                                    before_button,
+                                    play_button,
+                                    after_button
+                                ],
+                                alignment=ft.MainAxisAlignment.CENTER
+                            ),
+                            padding=ft.padding.only()
+                        )
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER
                 ),
-                ft.Container(
-                    content=ft.Row(
-                        controls=[
-                            c_t_t,
-                            prs_bar,
-                            duracion
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER
-                    )
-                ),
-                ft.Container(
-                    content=ft.Row(
-                        controls=[
-                            before_button,
-                            play_button,
-                            after_button
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER
-                    ),
-                    padding=ft.padding.only()
+                width=1000,
+                height=130,
+                border_radius=20,
+                gradient=ft.LinearGradient(
+                    colors=[ft.colors.BLUE_900, ft.colors.GREY_900, ft.colors.BLACK],
+                    begin=ft.Alignment(-1, -1),
+                    end=ft.Alignment(1, 1)
                 )
-            ],
-            alignment=ft.MainAxisAlignment.CENTER
-        ),
-        width=1000,
-        height=130,
-        border_radius=20,
-        gradient=ft.LinearGradient(
-            colors=[ft.colors.PURPLE_900, ft.colors.GREY_900, ft.colors.BLACK],
-            begin=ft.Alignment(-1, -1),
-            end=ft.Alignment(1, 1)
         )
-    )
-
-    page.add(title,contenedor)
+    
     if playlist:
         load_song()
         update_info_song()
@@ -128,4 +129,3 @@ async def main(page: ft.Page):
         await update_progress()
 
 
-ft.app(target=main)
