@@ -6,19 +6,18 @@ class UI(ft.UserControl):
         def iniciar(e):
             cuenta="cris"
             psd="12345678"
+            # Accede a los valores de los campos de texto
             email=self.correo_field.value
             psw=self.contrasena_field.value
             for i in range(3):
                 if email == cuenta and psw==psd:
                     print("Bienvenido")
-                    ft.AlertDialog(True,'Bienvenido','su correo es correcto',bgcolor='#000f0f')
+                    ft.open_file('imicio,py')
                 else:
                     print("algo esta mal")
                 if i ==3:
                     break
-                    
-            # Accede a los valores de los campos de texto
-            
+
             print(email)
             print(psw)
             
@@ -28,7 +27,8 @@ class UI(ft.UserControl):
         self.portada = ft.Container(
             content=ft.Column(
                 controls=[
-                    ft.Text('Imagen o contenido de portada')    
+                    ft.Text('Imagen o contenido de portada')
+                        
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER
@@ -45,6 +45,7 @@ class UI(ft.UserControl):
             border='underline',
             color='black',
             prefix_icon=ft.icons.EMAIL
+            
         )
         
         self.contrasena_field = ft.TextField(
